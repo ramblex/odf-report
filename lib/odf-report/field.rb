@@ -1,8 +1,6 @@
 module ODFReport
   class Field
 
-    DELIMITERS = %w([ ])
-
     def initialize(opts, &block)
       @name = opts[:name]
       @data_field = opts[:data_field]
@@ -21,15 +19,15 @@ module ODFReport
     end
 
     def replace!(content, data_item = nil)
-
-      txt = content.inner_html
-
       val = get_value(data_item)
+      content.xpath("//text:user-field-decl[@text:name='#{@name}']").each do |node|
+        node['office:string-value'] = val
+      end
 
-      txt.gsub!(to_placeholder, sanitize(val))
-
-      content.inner_html = txt
-
+      content.xpath("//*[@form:name='#{@name}']").each do |node|
+        node['current-value'] = sanitize(val)
+        node['value'] = sanitize(val)
+      end
     end
 
     def get_value(data_item = nil)
@@ -55,14 +53,6 @@ module ODFReport
     end
 
     private
-
-    def to_placeholder
-      if DELIMITERS.is_a?(Array)
-        "#{DELIMITERS[0]}#{@name.to_s.upcase}#{DELIMITERS[1]}"
-      else
-        "#{DELIMITERS}#{@name.to_s.upcase}#{DELIMITERS}"
-      end
-    end
 
     def sanitize(txt)
       txt = html_escape(txt)
