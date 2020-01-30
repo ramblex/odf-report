@@ -25,8 +25,8 @@ module ODFReport
       end
 
       content.xpath("//*[@form:name='#{@name}']").each do |node|
-        node['current-value'] = sanitize(val)
-        node['value'] = sanitize(val)
+        node['form:current-value'] = sanitize(val)
+        node['form:value'] = sanitize(val)
       end
     end
 
