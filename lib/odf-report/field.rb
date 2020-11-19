@@ -1,21 +1,16 @@
 module ODFReport
   class Field
-
     def initialize(opts, &block)
       @name = opts[:name]
       @data_field = opts[:data_field]
 
       unless @value = opts[:value]
-
         if block_given?
           @block = block
-
         else
           @block = lambda { |item| self.extract_value(item) }
         end
-
       end
-
     end
 
     def replace!(content, data_item = nil)
@@ -27,6 +22,11 @@ module ODFReport
       content.xpath("//*[@form:name='#{@name}']").each do |node|
         node['form:current-value'] = sanitize(val)
         node['form:value'] = sanitize(val)
+      end
+
+      content.xpath("//text:user-field-get[@text:name='#{@name}']").each do |node|
+        new_node = Nokogiri::XML::Text.new(val, content)
+        node.replace(new_node)
       end
     end
 

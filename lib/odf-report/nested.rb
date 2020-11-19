@@ -1,12 +1,10 @@
 module ODFReport
-
   module Nested
 
     def add_field(name, data_field=nil, &block)
       opts = {:name => name, :data_field => data_field}
       field = Field.new(opts, &block)
       @fields << field
-
     end
     alias_method :add_column, :add_field
 
@@ -14,7 +12,6 @@ module ODFReport
       opts = {:name => name, :data_field => data_field}
       field = Text.new(opts, &block)
       @texts << field
-
     end
 
     def add_table(table_name, collection_field, opts={})
@@ -33,9 +30,7 @@ module ODFReport
       yield(sec)
     end
 
-
     def get_collection_from_item(item, collection_field)
-
       return item[collection_field] if item.is_a?(Hash)
 
       if collection_field.is_a?(Array)
@@ -56,7 +51,5 @@ module ODFReport
 
       return collection
     end
-
   end
-
 end
