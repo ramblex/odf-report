@@ -15,7 +15,7 @@ module ODFReport
       table = find_table_node(doc)
       return unless table.present?
 
-      template_row = table.xpath("./table:table-row")&.first
+      template_row = table.xpath("./table:table-row")&.first.dup
       return unless template_row.present?
 
       @collection = get_collection_from_item(row, @collection_field) if row
