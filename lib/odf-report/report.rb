@@ -13,6 +13,7 @@ class Report
     @images = {}
     @image_names_replacements = {}
     @sections = []
+    @frames = []
 
     yield(self) if block_given?
 
@@ -50,6 +51,11 @@ class Report
     @images[name] = path
   end
 
+  def add_frame(frame_name, operations={}, opts={})
+    opts.merge!(name: frame_name, ops: operations)
+    @frames << Frame.new(opts)
+  end
+
   def generate(dest = nil)
 
     @template.update_content do |file|
@@ -61,6 +67,7 @@ class Report
 
         @texts.each    { |t| t.replace!(doc) }
         @fields.each   { |f| f.replace!(doc) }
+        @frames.each { |f| f.replace!(doc) }
 
         find_image_name_matches(doc)
         avoid_duplicate_image_names(doc)
